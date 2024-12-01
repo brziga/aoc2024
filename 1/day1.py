@@ -48,3 +48,13 @@ for i in range(n):
     diff += abs(col1[i] - col2[i])
 
 print(f"Part 1: The total distance between the lists is {diff}")
+
+# Part 2
+rigth_occs = {}
+for i in range(n):
+    rigth_occs[col2[i]] = rigth_occs.get(col2[i], 0) + 1
+similarity = 0
+for i in range(n):
+    similarity += col1[i] * (rigth_occs[col1[i]] if col1[i] in rigth_occs.keys() else 0)
+
+print(f"Part 2: The similarity between the lists is {similarity}")
