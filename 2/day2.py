@@ -47,3 +47,19 @@ for r in reports:
         safe += 1
 
 print(f"{safe} reports are safe")
+
+# Part 2
+
+safe = 0
+for r in reports:
+    for j in range(len(r)):
+        rc = r.copy()
+        del rc[j]
+        increasing = all(rc[i] < rc[i + 1] for i in range(len(rc) - 1))
+        decreasing = all(rc[i] > rc[i + 1] for i in range(len(rc) - 1))
+        diff = all(1 <= abs(rc[i] - rc[i + 1]) <= 3 for i in range(len(rc) - 1))
+        if (increasing or decreasing) and diff:
+            safe += 1
+            break
+
+print(f"{safe} reports are actually safe")
