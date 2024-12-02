@@ -1,5 +1,6 @@
 # Advent of Code 2025
-# Day 
+# Day 1
+# https://adventofcode.com/2024/day/1
 ####################################################################
 
 # imports
