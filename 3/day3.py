@@ -74,3 +74,50 @@ result = 0
 for ins in instructions:
     result += ins[0] * ins[1]
 print(f"If you add up all the results of the multiplications, you get {result}")
+
+# Part 2
+ints = set(("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"))
+mul_default_states = [")", "int", ",", "int", "(", "l", "u", "m"]
+mul_states = mul_default_states.copy()
+instructions = []
+curr_instr = []
+parsing_mul = False
+enabled = True
+start = 0
+i = 0
+while i < len(memory):
+    c = memory[i]
+    if memory[i:i+4] == "do()":
+        i += 3
+        enabled = True
+    elif memory[i:i+7] == "don't()":
+        i += 6
+        enabled = False
+    elif enabled:
+        if not parsing_mul and c == "m":
+            parsing_mul = True
+            mul_states = mul_default_states.copy()
+            mul_states.pop()
+            curr_instr = []
+        elif parsing_mul:
+            if c == mul_states[-1]:
+                mul_states.pop()
+                if not mul_states:
+                    parsing_mul = False
+                    instructions.append(curr_instr)
+            elif mul_states.pop() == "int":
+                start = i
+                while c in ints:
+                    i += 1
+                    c = memory[i]
+                if i - start > 0:
+                    curr_instr.append(int(memory[start:i]))
+                continue
+            else:
+                parsing_mul = False
+    i += 1
+
+result = 0
+for ins in instructions:
+    result += ins[0] * ins[1]
+print(f"If you add up all the results of just the enabled multiplications, you get {result}")
