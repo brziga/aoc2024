@@ -49,7 +49,6 @@ for r in reports:
 print(f"{safe} reports are safe")
 
 # Part 2
-
 safe = 0
 for r in reports:
     for j in range(len(r)):
