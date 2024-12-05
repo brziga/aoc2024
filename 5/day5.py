@@ -52,6 +52,7 @@ except Exception as e:
 
 # Part 1
 middle_sum = 0
+incorrectly_ordered = []
 for update in updates:
     # find out if update is in order
     in_order = True
@@ -61,9 +62,24 @@ for update in updates:
         intersect = seen & rules.get(update[i], set())
         if intersect:
             in_order = False
+            incorrectly_ordered.append(update)
             break
     if in_order:
         middle_sum += update[len(update)//2]
         if len(update) % 2 == 0: print(f"even length update: {update}")
 
 print(f"If you add up the middle page number from correctly ordered updates, you get: {middle_sum}")
+
+# Part 2
+middle_sum_corrected = 0
+for update in incorrectly_ordered:
+    currset = set(update)
+    prec_count = {}
+    for p in update:
+        prec_count[p] = currset & rules.get(p, set())
+    order = sorted(prec_count.items(), key=lambda x: len(x[1]), reverse=True)
+    middle_sum_corrected += order[len(order)//2][0]
+    if len(order) % 2 == 0: print(f"even length order: {order}")
+    # print(f"{update} -> {[x[0] for x in order]}")
+
+print(f"If you add up the middle page numbers after correctly ordering incorrectly-ordered updates, you get: {middle_sum_corrected}")
