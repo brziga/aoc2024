@@ -53,13 +53,38 @@ for i in range(n):
     for o in ops:
         queue.append((nums, o))
     while queue:
-        n, op = queue.pop()
-        if len(n) == 2:
-            if ops[op](n[0], n[1]) == val:
+        curr_n, curr_op = queue.pop()
+        if len(curr_n) == 2:
+            if ops[curr_op](curr_n[0], curr_n[1]) == val:
                 possible = True
                 break
         else:
-            new_n = [ops[op](n[0], n[1])] + n[2:]
+            new_n = [ops[curr_op](curr_n[0], curr_n[1])] + curr_n[2:]
+            for o in ops:
+                queue.append((new_n, o))
+    if possible:
+        total_result += val
+
+print(f"Their total calibration result is {total_result}")
+
+# Part 2
+ops = {"+": lambda x, y: x + y, "*": lambda x, y: x * y, "||": lambda x, y: int(str(x) + str(y))}
+total_result = 0
+for i in range(n):
+    val = values[i]
+    nums = numbers[i]
+    queue = []
+    possible = False
+    for o in ops:
+        queue.append((nums, o))
+    while queue:
+        curr_n, curr_op = queue.pop()
+        if len(curr_n) == 2:
+            if ops[curr_op](curr_n[0], curr_n[1]) == val:
+                possible = True
+                break
+        else:
+            new_n = [ops[curr_op](curr_n[0], curr_n[1])] + curr_n[2:]
             for o in ops:
                 queue.append((new_n, o))
     if possible:
