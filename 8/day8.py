@@ -47,7 +47,6 @@ for i in range(m):
 
 antinodes = set()
 for freq, ants in antenna_map.items():
-    potential_antinodes = set()
     for i in range(len(ants)):
         for j in range(i + 1, len(ants)):
             diff_y = ants[i][0] - ants[j][0]
@@ -59,3 +58,33 @@ for freq, ants in antenna_map.items():
                     antinodes.add(a)
 
 print(f"{len(antinodes)} unique locations within the map contain an antinode")
+
+# Part 2
+# reuse antenna_map from Part 1
+m, n = len(area_map), len(area_map[0])
+antenna_map = {}
+for i in range(m):
+    for j in range(n):
+        if area_map[i][j] != ".":
+            antenna_map[area_map[i][j]] = antenna_map.get(area_map[i][j], []) + [(i, j)]
+
+antinodes = set()
+for freq, ants in antenna_map.items():
+    if len(ants) >= 2:
+        antinodes.update(ants)
+    for i in range(len(ants)):
+        for j in range(i + 1, len(ants)):
+            diff_y = ants[i][0] - ants[j][0]
+            diff_x = ants[i][1] - ants[j][1]
+            a1 = (ants[i][0] + diff_y, ants[i][1] + diff_x)
+            a2 = (ants[j][0] - diff_y, ants[j][1] - diff_x)
+            while 0 <= a1[0] < m and 0 <= a1[1] < n:
+                antinodes.add(a1)
+                a1 = (a1[0] + diff_y, a1[1] + diff_x)
+            while 0 <= a2[0] < m and 0 <= a2[1] < n:
+                antinodes.add(a2)
+                a2 = (a2[0] - diff_y, a2[1] - diff_x)
+
+
+print(f"{len(antinodes)} unique locations within the map contain an antinode")
+
