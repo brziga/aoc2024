@@ -6,6 +6,11 @@
 # imports
 
 
+# globals
+####################################
+
+####################################
+
 # reading the puzzle input
 
 # SET PATH HERE
