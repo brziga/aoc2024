@@ -68,3 +68,31 @@ for th in iter(trailheads):
     th_scores += len(nines)
 
 print(f"The sum of the scores of all trailheads on my topographic map is {th_scores}")
+
+# Part 2
+trailheads = set()
+m, n = len(topo_map), len(topo_map[0])
+for y in range(m):
+    for x in range(n):
+        if topo_map[y][x] == 0:
+            trailheads.add((y, x))
+th_ratings = 0
+moves = ((0, 1), (1, 0), (0, -1), (-1, 0))
+for th in iter(trailheads):
+    paths = set()
+    queue = [(topo_map[th[0]][th[1]], [th])]
+    while queue:
+        qval, prevs = queue.pop() # pops last, but it's O(1) and we are exploring all options anyway
+        qy, qx = prevs[-1]
+        for my, mx in moves:
+            new_y, new_x = qy + my, qx + mx
+            if 0 <= new_y < m and 0 <= new_x < n:
+                new_val = topo_map[new_y][new_x]
+                if new_val == qval + 1:
+                    if new_val == 9:
+                        paths.add(tuple(prevs + [(new_y, new_x)]))
+                    else:
+                        queue.append((new_val, prevs + [(new_y, new_x)]))
+    th_ratings += len(paths)
+
+print(f"The sum of the ratings of all trailheads is {th_ratings}")
