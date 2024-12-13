@@ -84,3 +84,67 @@ for plant_type, regions in region_data.items():
         total_price += region["area"] * region["perimeter"]
 
 print(f"The total price of fencing all regions on my map is {total_price}")
+
+# Part 2
+region_data = {}
+visited = set()
+
+for iy in range(m):
+    for ix in range(n):
+        if (iy, ix) in visited: continue
+        
+        plant_type = area_map[iy][ix]
+        
+        queue = [(iy, ix)]
+        reg_area, reg_peri = 0, 0
+
+        left_verts = {} # left verticals
+        right_verts = {}
+        top_hors = {} # top horizontals
+        bottom_hors = {}
+
+        while queue:
+            qy, qx = queue.pop()
+            if (qy, qx) in visited: continue
+            visited.add((qy, qx))
+
+            # fences - True -> needs fence ; False -> no fence (same plant)
+            right_fence = qx >= n-1 or area_map[qy][qx+1] != plant_type
+            left_fence = qx <= 0 or area_map[qy][qx-1] != plant_type
+            top_fence = qy <= 0 or area_map[qy-1][qx] != plant_type
+            bottom_fence = qy >= m-1 or area_map[qy+1][qx] != plant_type
+
+            if left_fence: 
+                left_verts[qx] = left_verts.get(qx, []) + [qy]
+            else: queue.append((qy, qx-1))
+            if right_fence: 
+                right_verts[qx] = right_verts.get(qx, []) + [qy]
+            else: queue.append((qy, qx+1))
+            if top_fence: 
+                top_hors[qy] = top_hors.get(qy, []) + [qx]
+            else: queue.append((qy-1, qx))
+            if bottom_fence: 
+                bottom_hors[qy] = bottom_hors.get(qy, []) + [qx]
+            else: queue.append((qy+1, qx))
+
+            reg_area += 1
+        
+        for side in (left_verts, right_verts, top_hors, bottom_hors):
+            for k, v in side.items():
+                v.sort()
+                for i in range(1, len(v)):
+                    if v[i] - v[i-1] > 1:
+                        reg_peri += 1
+                reg_peri += 1
+        
+        region_data[plant_type] = region_data.get(plant_type, []) + [{
+            "area": reg_area,
+            "perimeter": reg_peri
+        }]
+
+total_price = 0
+for plant_type, regions in region_data.items():
+    for region in regions:
+        total_price += region["area"] * region["perimeter"]
+
+print(f"The new total price of fencing all regions on my map is {total_price}")
