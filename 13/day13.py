@@ -10,6 +10,7 @@
 ####################################
 COST_A = 3 # cost to push button A
 COST_B = 1 # cost to push button B
+P2_POS_OFFSET = 10_000_000_000_000
 ####################################
 
 # reading the puzzle input
@@ -74,4 +75,33 @@ for machine in machines:
         fewest_tokens += lowest_tokens
     # print(f"Machine: {machine}, lowest tokens: {lowest_tokens}")
 
+print(f"The fewest tokens I would have to spend to win all possible prizes is {fewest_tokens}")
+
+# Part 2
+fewest_tokens = 0
+
+for machine in machines:
+    k1, k2 = machine["prize"][0] + P2_POS_OFFSET, machine["prize"][1] + P2_POS_OFFSET
+    c1, d1 = machine["A"][0], machine["B"][0]
+    c2, d2 = machine["A"][1], machine["B"][1]
+
+    p = c1 * d2 - c2 * d1
+    q = c1 * k2 - c2 * k1
+
+    if p == 0:
+        print("p == 0, apocalyptosynclinalism of the universe ensuing....")
+    else:
+        if q % p == 0:
+            # if not, system does not have a solution
+            b = q // p
+            if b > 0:
+                if (k1 - d1 * b) % c1 == 0:
+                    a = (k1 - d1 * b) // c1
+                    if a > 0:
+                        fewest_tokens += a * COST_A + b * COST_B
+                    elif a == 0:
+                        print("a was zero.... *thinking face*")
+            elif b == 0:
+                print("b was zero.... *thinking face*")
+                
 print(f"The fewest tokens I would have to spend to win all possible prizes is {fewest_tokens}")
