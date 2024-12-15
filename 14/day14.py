@@ -74,21 +74,21 @@ for s in range(SECONDS):
 # [print(rp) for rp in robot_placements.values()]
 
 ### debug visualization ######################################################
-matrix = [[0 for _ in range(SPACE_SIZE["wide"])] for _ in range(SPACE_SIZE["tall"])]
+# matrix = [[0 for _ in range(SPACE_SIZE["wide"])] for _ in range(SPACE_SIZE["tall"])]
 
-for pos in robot_placements.values():
-    x, y = pos
-    matrix[y][x] += 1
+# for pos in robot_placements.values():
+#     x, y = pos
+#     matrix[y][x] += 1
 
-for y in range(SPACE_SIZE["tall"]):
-    for x in range(SPACE_SIZE["wide"]):
-        if matrix[y][x] == 0:
-            matrix[y][x] = "."
-        else:
-            matrix[y][x] = str(matrix[y][x])
+# for y in range(SPACE_SIZE["tall"]):
+#     for x in range(SPACE_SIZE["wide"]):
+#         if matrix[y][x] == 0:
+#             matrix[y][x] = "."
+#         else:
+#             matrix[y][x] = str(matrix[y][x])
 
-for row in matrix:
-    print(" ".join(row))
+# for row in matrix:
+#     print(" ".join(row))
 ###############################################################################
 
 quadrants = [[0, 0], [0, 0]]
@@ -105,3 +105,68 @@ for i in range(len(robots)):
 safety_factor = quadrants[0][0] * quadrants[0][1] * quadrants[1][0] * quadrants[1][1]
 
 print(f"The safety factor after exactly {SECONDS} seconds have elapsed will be {safety_factor}")
+
+# Part 2
+robot_placements = {}
+for i in range(len(robots)):
+    robot_placements[i] = [robots[i]["pos"]["x"], robots[i]["pos"]["y"]]
+
+# output_file_path = "14/day14_output.txt"
+# output_file = None
+# try:
+#     output_file = open(output_file_path, 'w')
+# except Exception as e:
+#     print(f"An error occurred while opening the file for writing: {e}")
+
+line_formed = False
+line_text = "################" # i hate how crude this is and i wish to revisit it in the future
+seconds = 0
+while not line_formed:
+    matrix = [['.' for _ in range(SPACE_SIZE["wide"])] for _ in range(SPACE_SIZE["tall"])]
+    for i in range(len(robots)):
+        # new x
+        new_x = robot_placements[i][0] + robots[i]["vel"]["x"]
+        # wrap x if out of bounds
+        if new_x >= SPACE_SIZE["wide"]: new_x = new_x % SPACE_SIZE["wide"]
+        elif new_x < 0: new_x = SPACE_SIZE["wide"] + new_x
+
+        # new y
+        new_y = robot_placements[i][1] + robots[i]["vel"]["y"]
+        # wrap y if out of bounds
+        if new_y >= SPACE_SIZE["tall"]: new_y = new_y % SPACE_SIZE["tall"]
+        elif new_y < 0: new_y = SPACE_SIZE["tall"] + new_y
+
+        robot_placements[i] = [new_x, new_y]
+
+        matrix[new_y][new_x] = "#"
+
+    for mline in matrix:
+        if line_text in "".join(mline):
+            line_formed = True
+            break
+
+    seconds += 1
+    
+#     if output_file:
+#         output_file.write(f"After {s} seconds:\n")
+#         for row in matrix:
+#             output_file.write(" ".join(row) + "\n")
+#         output_file.write("\n\n")
+
+# if output_file:
+#     output_file.close()
+
+if line_formed:
+    print(f"Line formed after {seconds} seconds")
+    # matrix = [['.' for _ in range(SPACE_SIZE["wide"])] for _ in range(SPACE_SIZE["tall"])]
+    # for pos in robot_placements.values():
+    #     x, y = pos
+    #     matrix[y][x] = '#'
+
+    with open("14/day14_output.txt", 'w') as output_file:
+        for row in matrix:
+            output_file.write(" ".join(row) + "\n")
+else:
+    print("No line formed")
+
+print(f"The fewest amount of seconds that must elapse for the robots to display the easter egg is {seconds}")
